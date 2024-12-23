@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Deal</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: #f5f5f5;
+            padding: 20px;
+            color: #333;
+
+        }
+
+        .form-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+
+        }
+
+        .form-section {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 20px;
+            font-weight: 500;
+            margin-bottom: 20px;
+            color: #444;
+        }
+
+        .input-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        input, select, textarea, button {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            color: #333;
+            background: white;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #2196F3;
+        }
+
+        input::placeholder, select::placeholder, textarea::placeholder {
+            color: #999;
+        }
+
+        .time-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        button{
+            background: #ffd500;
+            font-size: 1.5rem;
+            max-width: 25rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.53);
+        }
+
+    </style>
+</head>
+
+<body>
+<h1>Create Deal</h1>
+<form class="form-container" id="dealform">
+    <div class="form-section">
+        <h2>Client details</h2>
+        <div class="input-group">
+            <label>
+                <input type="text" placeholder="First name" name="clientName">
+            </label>
+            <label>
+                <input type="text" placeholder="Last name" >
+            </label>
+        </div>
+        <div class="input-group">
+            <label>
+                <input type="tel" placeholder="Phone" class="input-full" >
+            </label>
+        </div>
+        <div class="input-group">
+            <label>
+                <input type="email" placeholder="Email (optional)" class="input-full">
+            </label>
+        </div>
+    </div>
+
+    <div class="form-section">
+        <h2>Job details</h2>
+        <div class="input-group">
+            <label>
+                <select >
+                    <option value="" disabled selected>Job type</option>
+                    <option value="type1">Type 1</option>
+                    <option value="type2">Type 2</option>
+                </select>
+            </label>
+            <label>
+                <select >
+                    <option value="" disabled selected>Job source</option>
+                    <option value="source1">Source 1</option>
+                    <option value="source2">Source 2</option>
+                </select>
+            </label>
+        </div>
+        <div class="input-group">
+            <label>
+                <textarea placeholder="Job description (optional)" class="input-full"></textarea>
+            </label>
+            <label>
+                <select name="currency">
+                    <option value="" disabled selected>Currency</option>
+                    <option value="UZS">UZS</option>
+                    <option value="USD">USD</option>
+                </select>
+            </label>
+            <label>
+                <input name="value" type="number" placeholder="Value of deal" class="input-full">
+            </label>
+        </div>
+    </div>
+
+    <div class="form-section">
+        <h2>Service location</h2>
+        <div class="input-group">
+            <label>
+                <input type="text" placeholder="Address" class="input-full" >
+            </label>
+        </div>
+        <div class="input-group">
+            <label>
+                <input type="text" placeholder="City" class="input-full" >
+            </label>
+        </div>
+        <div class="input-group">
+            <label>
+                <input type="text" placeholder="State" class="input-full" >
+            </label>
+        </div>
+        <div class="input-group">
+            <label>
+                <input type="text" placeholder="Zip code">
+            </label>
+
+        </div>
+    </div>
+
+    <div class="form-section">
+        <h2>Scheduled</h2>
+        <div class="input-group">
+            <label>
+                <input type="date" placeholder="Start date" class="input-full" >
+            </label>
+        </div>
+        <div class="input-group time-inputs">
+            <label>
+                <input type="time" placeholder="Start time" >
+            </label>
+            <label>
+                <input type="time" placeholder="End time">
+            </label>
+        </div>
+        <div class="input-group">
+            <label>
+                <select class="input-full" >
+                    <option value="" disabled selected>Test select</option>
+                    <option value="test1">Test 1</option>
+                    <option value="test2">Test 2</option>
+                </select>
+            </label>
+        </div>
+    </div>
+    <button onclick="createDeal()">Create deal</button>
+</form>
+
+
+<script>
+
+     const createDeal =  async () => {
+         const url = 'https://api.pipedrive.com/v1/deals?api_token=4500cb5153f49c1614d1e24fb82d8aef2504e303';
+         const form = document.getElementById('dealform')
+         const formData = new FormData(form);
+         const data = {
+             title : formData.get('clientName'),
+             currency: formData.get('currency'),
+             value: formData.get('value')
+         }
+         try{
+             const response = await fetch(url, {
+                 method: 'POST',
+                 headers: {
+                     'Content-Type': 'application/json',
+                 },
+                 body: JSON.stringify(data)
+             });
+
+             const result = response.json();
+             console.log(result)
+
+         }catch (err){
+             console.log(err)
+         }
+     }
+
+</script>
+</body>
+</html>
